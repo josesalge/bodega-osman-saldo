@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estado de Cuenta · Pedidos y Deudas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+      body {
+        font-family:
+          "Plus Jakarta Sans",
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/40 text-slate-800 min-h-screen flex flex-col"
+  >
+    <!-- Encabezado -->
+    <header
+      class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white py-6 px-4 shadow-lg"
+    >
+      <div
+        class="max-w-3xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span
+              class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"
+            ></span>
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">
+              Estado de Cuenta
+            </h1>
+          </div>
+          <p class="text-slate-300 text-sm mt-1">
+            Consulta tus consumos pendientes y vencidos por DNI
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span
+            id="badge-tasa"
+            class="text-xs font-medium bg-white/10 backdrop-blur border border-white/15 px-3.5 py-2 rounded-full text-slate-100"
+          >
+            Tasa ref: Bs. 917,78 / USD
+          </span>
+          <a
+            href="https://bodega-osman.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-md shadow-emerald-950/30 transition"
+          >
+            <span>Ir a la tienda</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-8 space-y-6">
+      <!-- Buscador por DNI -->
+      <section
+        class="bg-white/95 p-6 sm:p-7 rounded-3xl shadow-sm border border-slate-200/80"
+      >
+        <form id="search-form" class="space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <label
+              for="dni-input"
+              class="block text-sm font-bold text-slate-800"
+            >
+              Ingresa tu número de DNI / Cédula
+            </label>
+            <a
+              href="https://bodega-osman.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline underline-offset-2 sm:hidden"
+            >
+              Realizar pedidos →
+            </a>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input
+              id="dni-input"
+              type="text"
+              inputmode="numeric"
+              placeholder="Ej. 28007807"
+              required
+              class="flex-1 px-4 py-3.5 rounded-2xl border border-slate-300 bg-slate-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent text-lg font-semibold text-slate-900 transition"
+            />
+            <button
+              type="submit"
+              class="bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-bold px-7 py-3.5 rounded-2xl shadow-sm shadow-indigo-600/20 transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <span>Consultar</span>
+            </button>
+          </div>
+
+          <p class="text-xs text-slate-500">
+            Escribe solo números, sin puntos ni guiones.
+          </p>
+        </form>
+      </section>
+
+      <!-- Mensajes de carga / error -->
+      <div
+        id="status-box"
+        class="hidden p-4 rounded-2xl text-sm font-medium"
+      ></div>
+
+      <!-- Sección de resultados -->
+      <section id="result-section" class="hidden space-y-6">
+        <!-- Información del cliente + filtros + acceso a tienda -->
+        <div
+          class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-5"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <div>
+              <span
+                id="client-company"
+                class="inline-block text-xs font-bold tracking-wide text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full"
+              ></span>
+              <h2
+                id="client-name"
+                class="text-2xl font-extrabold text-slate-900 mt-2"
+              ></h2>
+              <p id="client-dni" class="text-sm text-slate-500 font-medium"></p>
+            </div>
+
+            <a
+              href="https://bodega-osman.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-2xl transition w-full sm:w-auto"
+            >
+              <span>Ir a la tienda a realizar pedidos</span>
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </a>
+          </div>
+
+          <div
+            class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          >
+            <span
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider"
+              >Filtrar por estatus</span
+            >
+            <div
+              class="inline-flex rounded-2xl bg-slate-100 p-1 w-fit"
+              role="group"
+            >
+              <button
+                type="button"
+                data-filter="TODOS"
+                class="filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl bg-white text-slate-900 shadow-sm transition cursor-pointer"
+              >
+                Todos
+              </button>
+              <button
+                type="button"
+                data-filter="Pendiente"
+                class="filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition cursor-pointer"
+              >
+                Pendiente
+              </button>
+              <button
+                type="button"
+                data-filter="Vencido"
+                class="filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition cursor-pointer"
+              >
+                Vencido
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjetas de Totales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div
+            class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-200/70"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-semibold text-slate-500">
+                Total a Pagar (Bolívares)
+              </p>
+              <span
+                class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full"
+                >VES</span
+              >
+            </div>
+            <p
+              id="total-bs"
+              class="text-3xl font-extrabold text-emerald-700 mt-2"
+            >
+              Bs. 0,00
+            </p>
+            <p id="count-items" class="text-xs text-slate-400 mt-2">
+              0 consumos registrados
+            </p>
+          </div>
+
+          <div
+            class="bg-white p-6 rounded-3xl shadow-sm border border-indigo-200/70"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-semibold text-slate-500">
+                Equivalente en Dólares
+              </p>
+              <span
+                class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full"
+                >USD</span
+              >
+            </div>
+            <p
+              id="total-usd"
+              class="text-3xl font-extrabold text-slate-900 mt-2"
+            >
+              $0.00
+            </p>
+            <p id="tasa-label" class="text-xs text-slate-400 mt-2">
+              Calculado a tasa Bs. 917,78
+            </p>
+          </div>
+        </div>
+
+        <!-- Detalle desplegable -->
+        <div
+          class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden"
+        >
+          <button
+            type="button"
+            id="toggle-details-btn"
+            class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
+          >
+            <span>Ver detalle de la deuda</span>
+            <svg
+              id="chevron-icon"
+              class="w-5 h-5 text-slate-500 transform transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <div
+            id="details-container"
+            class="hidden border-t border-slate-200 overflow-x-auto"
+          >
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr
+                  class="bg-slate-50/90 text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200"
+                >
+                  <th class="py-3.5 px-4">Fecha</th>
+                  <th class="py-3.5 px-4">Producto</th>
+                  <th class="py-3.5 px-4 text-center">Cant.</th>
+                  <th class="py-3.5 px-4">Estatus</th>
+                  <th class="py-3.5 px-4 text-right">Monto Bs.</th>
+                  <th class="py-3.5 px-4 text-right">Equiv. USD</th>
+                </tr>
+              </thead>
+              <tbody
+                id="details-tbody"
+                class="divide-y divide-slate-100 text-sm"
+              ></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="py-6 px-4 text-center text-xs text-slate-400">
+      ¿Quieres hacer un nuevo pedido? Visita
+      <a
+        href="https://bodega-osman.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-indigo-600 hover:underline font-medium"
+        >bodega-osman.vercel.app</a
+      >
+    </footer>
+
+    <script>
+      // PEGA AQUÍ LA URL DE TU GOOGLE APPS SCRIPT:
+      const APPS_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbzQAW15zoig3agknxY9qApsHe5fPOTt4ftaJaBBuxAYED8l4Y6CWTYaaG02RGS_ac85-g/exec";
+
+      let currentData = null;
+      let currentFilter = "TODOS";
+
+      const form = document.getElementById("search-form");
+      const dniInput = document.getElementById("dni-input");
+      const statusBox = document.getElementById("status-box");
+      const resultSection = document.getElementById("result-section");
+      const toggleDetailsBtn = document.getElementById("toggle-details-btn");
+      const detailsContainer = document.getElementById("details-container");
+      const chevronIcon = document.getElementById("chevron-icon");
+
+      function formatUSD(val) {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(val);
+      }
+
+      function formatBs(val) {
+        return (
+          "Bs. " +
+          new Intl.NumberFormat("es-VE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(val)
+        );
+      }
+
+      function showStatus(msg, type = "info") {
+        statusBox.textContent = msg;
+        statusBox.className =
+          "p-4 rounded-2xl text-sm font-medium " +
+          (type === "error"
+            ? "bg-red-50 text-red-700 border border-red-200"
+            : "bg-indigo-50 text-indigo-700 border border-indigo-200");
+        statusBox.classList.remove("hidden");
+      }
+
+      function hideStatus() {
+        statusBox.classList.add("hidden");
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const cleanDni = dniInput.value.replace(/\D/g, "");
+        if (!cleanDni) {
+          showStatus("Por favor ingresa un número de DNI válido.", "error");
+          return;
+        }
+
+        if (!APPS_SCRIPT_URL) {
+          showStatus(
+            "Configura primero la variable APPS_SCRIPT_URL en index.html.",
+            "error",
+          );
+          return;
+        }
+
+        resultSection.classList.add("hidden");
+        showStatus("Consultando estado de cuenta...", "info");
+
+        try {
+          const res = await fetch(
+            `${APPS_SCRIPT_URL}?dni=${encodeURIComponent(cleanDni)}`,
+          );
+          const responseData = await res.json();
+
+          if (!responseData.ok) {
+            showStatus(
+              responseData.error || "No se encontraron datos para este DNI.",
+              "error",
+            );
+            return;
+          }
+
+          hideStatus();
+          currentData = responseData;
+          currentFilter = "TODOS";
+          updateFilterButtons();
+          renderClientView();
+          resultSection.classList.remove("hidden");
+        } catch (err) {
+          showStatus(
+            "Error al conectar con la base de datos. Intenta nuevamente.",
+            "error",
+          );
+        }
+      });
+
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentFilter = btn.dataset.filter;
+          updateFilterButtons();
+          renderClientView();
+        });
+      });
+
+      function updateFilterButtons() {
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          if (btn.dataset.filter === currentFilter) {
+            btn.className =
+              "filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl bg-white text-slate-900 shadow-sm transition cursor-pointer";
+          } else {
+            btn.className =
+              "filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition cursor-pointer";
+          }
+        });
+      }
+
+      toggleDetailsBtn.addEventListener("click", () => {
+        const isHidden = detailsContainer.classList.toggle("hidden");
+        chevronIcon.style.transform = isHidden
+          ? "rotate(0deg)"
+          : "rotate(180deg)";
+      });
+
+      function renderClientView() {
+        if (!currentData) return;
+
+        const tasa =
+          Number(currentData.tasaBcv) > 0
+            ? Number(currentData.tasaBcv)
+            : 917.7751;
+        const tasaFormateada = new Intl.NumberFormat("es-VE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 4,
+        }).format(tasa);
+
+        document.getElementById("badge-tasa").textContent =
+          `Tasa ref: Bs. ${tasaFormateada} / USD`;
+        document.getElementById("tasa-label").textContent =
+          `Calculado a tasa Bs. ${tasaFormateada}`;
+
+        document.getElementById("client-name").textContent =
+          currentData.cliente.nombre;
+        document.getElementById("client-company").textContent =
+          currentData.cliente.compania || "Cliente";
+        document.getElementById("client-dni").textContent =
+          `DNI: ${currentData.cliente.dni}`;
+
+        const filtered = currentData.deudas.filter((item) => {
+          if (currentFilter === "TODOS") return true;
+          return item.estatus.toLowerCase() === currentFilter.toLowerCase();
+        });
+
+        const totalBs = filtered.reduce(
+          (acc, item) => acc + (Number(item.totalBs) || 0),
+          0,
+        );
+        const totalUsdCalculado = totalBs / tasa;
+
+        document.getElementById("total-bs").textContent = formatBs(totalBs);
+        document.getElementById("total-usd").textContent =
+          formatUSD(totalUsdCalculado);
+        document.getElementById("count-items").textContent =
+          `${filtered.length} ${filtered.length === 1 ? "consumo registrado" : "consumos registrados"}`;
+
+        const tbody = document.getElementById("details-tbody");
+        tbody.innerHTML = "";
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 px-4 text-center text-slate-500">
+              No tienes deudas bajo el estatus "${currentFilter}".
+            </td>
+          </tr>`;
+          return;
+        }
+
+        filtered.forEach((item) => {
+          const bsItem = Number(item.totalBs) || 0;
+          const usdItem = bsItem / tasa;
+          const isVencido = item.estatus.toLowerCase() === "vencido";
+          const badgeClass = isVencido
+            ? "bg-red-100 text-red-700 border border-red-200"
+            : "bg-amber-100 text-amber-800 border border-amber-200";
+
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-50/80 transition";
+          tr.innerHTML = `
+          <td class="py-3.5 px-4 whitespace-nowrap text-slate-600">${item.fecha}</td>
+          <td class="py-3.5 px-4 font-semibold text-slate-900">${item.producto}</td>
+          <td class="py-3.5 px-4 text-center text-slate-600">${item.cantidad}</td>
+          <td class="py-3.5 px-4">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">
+              ${item.estatus}
+            </span>
+          </td>
+          <td class="py-3.5 px-4 text-right font-bold text-slate-900">${formatBs(bsItem)}</td>
+          <td class="py-3.5 px-4 text-right text-slate-700 font-medium">${formatUSD(usdItem)}</td>
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+    </script>
+  </body>
+</html>
