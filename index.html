@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estado de Cuenta · Pedidos y Deudas</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f172a'/%3E%3Cpath d='M18 16h28a2 2 0 0 1 2 2v30l-6-4-6 4-4-2.7-4 2.7-6-4-6 4V18a2 2 0 0 1 2-2z' fill='%2310b981'/%3E%3Crect x='24' y='25' width='16' height='3.5' rx='1.75' fill='%230f172a'/%3E%3Crect x='24' y='33' width='11' height='3.5' rx='1.75' fill='%230f172a'/%3E%3C/svg%3E"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
@@ -14,86 +19,156 @@
           -apple-system,
           sans-serif;
       }
+
+      /* Base común para botones de acción */
+      .btn-standard {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.75rem;
+        border-radius: 0.75rem;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.18s ease;
+        cursor: pointer;
+      }
+
+      .btn-standard:active {
+        transform: scale(0.98);
+      }
+
+      .btn-standard:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+      }
+
+      /* Consultar principal */
+      .btn-primary {
+        background-color: #4f46e5;
+        color: #ffffff;
+        border: 1px solid #4f46e5;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.22);
+      }
+
+      .btn-primary:hover {
+        background-color: #4338ca;
+        border-color: #4338ca;
+      }
+
+      /* Datos Bancarios: fondo blanco y borde azul */
+      .btn-bank {
+        background-color: #ffffff;
+        color: #1d4ed8;
+        border: 1.5px solid #3b82f6;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1);
+      }
+
+      .btn-bank:hover {
+        background-color: #eff6ff;
+        border-color: #2563eb;
+        color: #1e40af;
+      }
+
+      /* Ir a la tienda: verde clarito */
+      .btn-store-light {
+        background-color: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.12);
+      }
+
+      .btn-store-light:hover {
+        background-color: #bbf7d0;
+        border-color: #4ade80;
+        color: #14532d;
+      }
     </style>
   </head>
   <body
-    class="bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/40 text-slate-800 min-h-screen flex flex-col"
+    class="bg-gradient-to-br from-slate-100 via-slate-50 to-indigo-50/50 text-slate-800 min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-900"
   >
     <!-- Encabezado -->
     <header
-      class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white py-6 px-4 shadow-lg"
+      class="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white py-5 sm:py-6 px-4 shadow-lg"
     >
       <div
         class="max-w-3xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
-        <div>
+        <div class="min-w-0">
           <div class="flex items-center gap-2.5">
             <span
-              class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"
+              class="inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-400 shadow-xs shadow-emerald-400/60"
             ></span>
-            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">
+            <h1
+              class="text-xl sm:text-2xl font-extrabold tracking-tight truncate"
+            >
               Estado de Cuenta
             </h1>
           </div>
-          <p class="text-slate-300 text-sm mt-1">
+          <p class="text-slate-300 text-xs sm:text-sm mt-1">
             Consulta tus consumos pendientes y vencidos por DNI
           </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2.5">
+        <div
+          class="flex flex-wrap items-center justify-between sm:justify-end gap-2.5"
+        >
           <span
             id="badge-tasa"
-            class="text-xs font-medium bg-white/10 backdrop-blur border border-white/15 px-3.5 py-2 rounded-full text-slate-100"
+            class="text-xs font-semibold bg-white/10 backdrop-blur border border-white/15 px-3.5 py-2 rounded-full text-slate-100"
           >
             Tasa ref: Bs. 917,78 / USD
           </span>
+
           <a
             href="https://bodega-osman.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-md shadow-emerald-950/30 transition"
+            class="btn-standard btn-store-light"
           >
-            <span>Ir a la tienda</span>
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
+            Ir a la tienda
           </a>
         </div>
       </div>
     </header>
 
     <!-- Contenido principal -->
-    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-8 space-y-6">
+    <main
+      class="flex-1 max-w-3xl w-full mx-auto px-3.5 sm:px-4 py-6 sm:py-8 space-y-5 sm:space-y-6"
+    >
       <!-- Buscador por DNI -->
       <section
-        class="bg-white/95 p-6 sm:p-7 rounded-3xl shadow-sm border border-slate-200/80"
+        class="bg-white/95 p-5 sm:p-7 rounded-3xl shadow-sm border border-slate-200/80"
       >
         <form id="search-form" class="space-y-3">
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <label
               for="dni-input"
               class="block text-sm font-bold text-slate-800"
             >
               Ingresa tu número de DNI / Cédula
             </label>
-            <a
-              href="https://bodega-osman.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline underline-offset-2 sm:hidden"
-            >
-              Realizar pedidos →
-            </a>
+            <div class="flex items-center gap-3">
+              <button
+                type="button"
+                id="clear-dni-btn"
+                class="hidden text-xs font-semibold text-slate-400 hover:text-red-600 transition cursor-pointer"
+              >
+                Borrar guardada
+              </button>
+              <a
+                href="https://bodega-osman.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 underline underline-offset-2 sm:hidden"
+              >
+                Realizar pedidos →
+              </a>
+            </div>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3">
@@ -101,32 +176,19 @@
               id="dni-input"
               type="text"
               inputmode="numeric"
-              placeholder="Ej. 28007807"
+              placeholder="Ej. 12345678"
               required
-              class="flex-1 px-4 py-3.5 rounded-2xl border border-slate-300 bg-slate-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent text-lg font-semibold text-slate-900 transition"
+              class="flex-1 min-h-[2.75rem] px-4 py-3 rounded-xl border border-slate-300 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent text-base font-semibold text-slate-900 transition"
             />
             <button
               type="submit"
-              class="bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-bold px-7 py-3.5 rounded-2xl shadow-sm shadow-indigo-600/20 transition cursor-pointer flex items-center justify-center gap-2"
+              class="btn-standard btn-primary w-full sm:w-auto"
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              <span>Consultar</span>
+              Consultar
             </button>
           </div>
 
-          <p class="text-xs text-slate-500">
+          <p id="dni-helper" class="text-xs text-slate-500 leading-relaxed">
             Escribe solo números, sin puntos ni guiones.
           </p>
         </form>
@@ -139,47 +201,49 @@
       ></div>
 
       <!-- Sección de resultados -->
-      <section id="result-section" class="hidden space-y-6">
-        <!-- Información del cliente + filtros + acceso a tienda -->
+      <section id="result-section" class="hidden space-y-5 sm:space-y-6">
+        <!-- Información del cliente + filtros + acciones -->
         <div
-          class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-5"
+          class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-5"
         >
           <div
             class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
-            <div>
+            <div class="min-w-0">
               <span
                 id="client-company"
                 class="inline-block text-xs font-bold tracking-wide text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full"
               ></span>
               <h2
                 id="client-name"
-                class="text-2xl font-extrabold text-slate-900 mt-2"
+                class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2 break-words"
               ></h2>
-              <p id="client-dni" class="text-sm text-slate-500 font-medium"></p>
+              <p
+                id="client-dni"
+                class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5"
+              ></p>
             </div>
 
-            <a
-              href="https://bodega-osman.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-2xl transition w-full sm:w-auto"
+            <div
+              class="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 w-full sm:w-auto"
             >
-              <span>Ir a la tienda a realizar pedidos</span>
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <button
+                type="button"
+                id="open-bank-modal-result"
+                class="btn-standard btn-bank w-full sm:w-auto"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </a>
+                Datos Bancarios
+              </button>
+
+              <a
+                href="https://bodega-osman.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-standard btn-store-light w-full sm:w-auto"
+              >
+                Ir a la tienda
+              </a>
+            </div>
           </div>
 
           <div
@@ -189,31 +253,33 @@
               class="text-xs font-bold text-slate-500 uppercase tracking-wider"
               >Filtrar por estatus</span
             >
-            <div
-              class="inline-flex rounded-2xl bg-slate-100 p-1 w-fit"
-              role="group"
-            >
-              <button
-                type="button"
-                data-filter="TODOS"
-                class="filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl bg-white text-slate-900 shadow-sm transition cursor-pointer"
+            <div class="overflow-x-auto max-w-full pb-0.5">
+              <div
+                class="inline-flex rounded-xl bg-slate-100 p-1 w-max"
+                role="group"
               >
-                Todos
-              </button>
-              <button
-                type="button"
-                data-filter="Pendiente"
-                class="filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition cursor-pointer"
-              >
-                Pendiente
-              </button>
-              <button
-                type="button"
-                data-filter="Vencido"
-                class="filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition cursor-pointer"
-              >
-                Vencido
-              </button>
+                <button
+                  type="button"
+                  data-filter="TODOS"
+                  class="filter-btn px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-lg bg-white text-slate-900 shadow-xs transition cursor-pointer whitespace-nowrap"
+                >
+                  Todos
+                </button>
+                <button
+                  type="button"
+                  data-filter="Pendiente"
+                  class="filter-btn px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer whitespace-nowrap"
+                >
+                  Pendiente
+                </button>
+                <button
+                  type="button"
+                  data-filter="Vencido"
+                  class="filter-btn px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer whitespace-nowrap"
+                >
+                  Vencido
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -221,20 +287,20 @@
         <!-- Tarjetas de Totales -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div
-            class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-200/70"
+            class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-emerald-200/80"
           >
-            <div class="flex items-center justify-between">
-              <p class="text-sm font-semibold text-slate-500">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-xs sm:text-sm font-semibold text-slate-500">
                 Total a Pagar (Bolívares)
               </p>
               <span
-                class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full"
+                class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full shrink-0"
                 >VES</span
               >
             </div>
             <p
               id="total-bs"
-              class="text-3xl font-extrabold text-emerald-700 mt-2"
+              class="text-2xl sm:text-3xl font-extrabold text-emerald-700 mt-2.5 break-words"
             >
               Bs. 0,00
             </p>
@@ -244,20 +310,20 @@
           </div>
 
           <div
-            class="bg-white p-6 rounded-3xl shadow-sm border border-indigo-200/70"
+            class="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-indigo-200/80"
           >
-            <div class="flex items-center justify-between">
-              <p class="text-sm font-semibold text-slate-500">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-xs sm:text-sm font-semibold text-slate-500">
                 Equivalente en Dólares
               </p>
               <span
-                class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full"
+                class="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded-full shrink-0"
                 >USD</span
               >
             </div>
             <p
               id="total-usd"
-              class="text-3xl font-extrabold text-slate-900 mt-2"
+              class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2.5 break-words"
             >
               $0.00
             </p>
@@ -274,12 +340,12 @@
           <button
             type="button"
             id="toggle-details-btn"
-            class="w-full px-6 py-4 flex items-center justify-between text-left font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
+            class="w-full px-5 sm:px-6 py-4 flex items-center justify-between gap-3 text-left text-sm sm:text-base font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
           >
             <span>Ver detalle de la deuda</span>
             <svg
               id="chevron-icon"
-              class="w-5 h-5 text-slate-500 transform transition-transform duration-200"
+              class="w-5 h-5 shrink-0 text-slate-500 transform transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -297,22 +363,26 @@
             id="details-container"
             class="hidden border-t border-slate-200 overflow-x-auto"
           >
-            <table class="w-full text-left border-collapse">
+            <table class="w-full min-w-[540px] text-left border-collapse">
               <thead>
                 <tr
                   class="bg-slate-50/90 text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200"
                 >
-                  <th class="py-3.5 px-4">Fecha</th>
-                  <th class="py-3.5 px-4">Producto</th>
-                  <th class="py-3.5 px-4 text-center">Cant.</th>
-                  <th class="py-3.5 px-4">Estatus</th>
-                  <th class="py-3.5 px-4 text-right">Monto Bs.</th>
-                  <th class="py-3.5 px-4 text-right">Equiv. USD</th>
+                  <th class="py-3 px-3 sm:py-3.5 sm:px-4">Fecha</th>
+                  <th class="py-3 px-3 sm:py-3.5 sm:px-4">Producto</th>
+                  <th class="py-3 px-3 sm:py-3.5 sm:px-4 text-center">Cant.</th>
+                  <th class="py-3 px-3 sm:py-3.5 sm:px-4">Estatus</th>
+                  <th class="py-3 px-3 sm:py-3.5 sm:px-4 text-right">
+                    Monto Bs.
+                  </th>
+                  <th class="py-3 px-3 sm:py-3.5 sm:px-4 text-right">
+                    Equiv. USD
+                  </th>
                 </tr>
               </thead>
               <tbody
                 id="details-tbody"
-                class="divide-y divide-slate-100 text-sm"
+                class="divide-y divide-slate-100 text-xs sm:text-sm"
               ></tbody>
             </table>
           </div>
@@ -320,7 +390,9 @@
       </section>
     </main>
 
-    <footer class="py-6 px-4 text-center text-xs text-slate-400">
+    <footer
+      class="py-6 px-4 text-center text-xs text-slate-400 leading-relaxed"
+    >
       ¿Quieres hacer un nuevo pedido? Visita
       <a
         href="https://bodega-osman.vercel.app/"
@@ -331,21 +403,180 @@
       >
     </footer>
 
+    <!-- Modal Información Bancaria -->
+    <div
+      id="bank-modal"
+      class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-3.5 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bank-modal-title"
+    >
+      <div
+        class="bg-white w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-slate-200 p-5 sm:p-6 space-y-5 relative"
+      >
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <svg
+              class="w-5 h-5 shrink-0 text-slate-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              />
+            </svg>
+            <h3
+              id="bank-modal-title"
+              class="text-base sm:text-lg font-extrabold text-slate-900"
+            >
+              Información Bancaria
+            </h3>
+          </div>
+          <button
+            type="button"
+            id="close-bank-modal"
+            aria-label="Cerrar modal"
+            class="w-8 h-8 shrink-0 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div
+          class="rounded-2xl border border-slate-200/90 bg-slate-50/40 p-4 space-y-4"
+        >
+          <div class="flex items-start gap-3">
+            <svg
+              class="w-5 h-5 text-blue-600 mt-0.5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+              />
+            </svg>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">
+                Teléfono de Contacto
+              </p>
+              <p class="text-sm font-bold text-slate-800 mt-0.5">
+                +58 414-2079800
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <svg
+              class="w-5 h-5 text-blue-600 mt-0.5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
+            </svg>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">Banco</p>
+              <p class="text-sm font-bold text-slate-800 mt-0.5">
+                0105 - Banco Mercantil
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <svg
+              class="w-5 h-5 text-blue-600 mt-0.5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <div>
+              <p class="text-xs font-semibold text-slate-500">
+                Documento de Identidad
+              </p>
+              <p class="text-sm font-bold text-slate-800 mt-0.5">
+                Cédula: V-15.908.003
+              </p>
+              <p class="text-sm font-medium text-slate-600">
+                Bodega Osman C.A.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 space-y-1.5"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-amber-600 text-sm font-bold">📈</span>
+            <span
+              class="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-full"
+            >
+              Importante
+            </span>
+          </div>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            📈 Utilizamos la
+            <strong class="font-bold text-slate-900"
+              >tasa oficial del BCV</strong
+            >
+            para el cambio de divisas. Los precios mostrados en REF son
+            referenciales y pueden variar según la tasa del día.
+          </p>
+        </div>
+
+        <div
+          class="text-center space-y-1.5 text-xs font-medium text-slate-600 pt-1"
+        >
+          <p>💬 Envíanos tu comprobante de pago por WhatsApp</p>
+          <p>⚡ Entregas rápidas en toda la oficina</p>
+        </div>
+      </div>
+    </div>
+
     <script>
       // PEGA AQUÍ LA URL DE TU GOOGLE APPS SCRIPT:
       const APPS_SCRIPT_URL =
         "https://script.google.com/macros/s/AKfycbzQAW15zoig3agknxY9qApsHe5fPOTt4ftaJaBBuxAYED8l4Y6CWTYaaG02RGS_ac85-g/exec";
+      const STORAGE_DNI_KEY = "bodega_osman_ultimo_dni";
 
       let currentData = null;
       let currentFilter = "TODOS";
 
       const form = document.getElementById("search-form");
       const dniInput = document.getElementById("dni-input");
+      const clearDniBtn = document.getElementById("clear-dni-btn");
+      const dniHelper = document.getElementById("dni-helper");
       const statusBox = document.getElementById("status-box");
       const resultSection = document.getElementById("result-section");
       const toggleDetailsBtn = document.getElementById("toggle-details-btn");
       const detailsContainer = document.getElementById("details-container");
       const chevronIcon = document.getElementById("chevron-icon");
+
+      const bankModal = document.getElementById("bank-modal");
+      const openBankResultBtn = document.getElementById(
+        "open-bank-modal-result",
+      );
+      const closeBankModalBtn = document.getElementById("close-bank-modal");
 
       function formatUSD(val) {
         return new Intl.NumberFormat("en-US", {
@@ -378,9 +609,19 @@
         statusBox.classList.add("hidden");
       }
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const cleanDni = dniInput.value.replace(/\D/g, "");
+      function syncSavedDniUI(savedDni) {
+        if (savedDni) {
+          clearDniBtn.classList.remove("hidden");
+          dniHelper.textContent =
+            "Última cédula guardada automáticamente en este navegador.";
+        } else {
+          clearDniBtn.classList.add("hidden");
+          dniHelper.textContent =
+            "Escribe solo números, sin puntos ni guiones.";
+        }
+      }
+
+      async function consultarDni(cleanDni) {
         if (!cleanDni) {
           showStatus("Por favor ingresa un número de DNI válido.", "error");
           return;
@@ -393,6 +634,9 @@
           );
           return;
         }
+
+        localStorage.setItem(STORAGE_DNI_KEY, cleanDni);
+        syncSavedDniUI(cleanDni);
 
         resultSection.classList.add("hidden");
         showStatus("Consultando estado de cuenta...", "info");
@@ -423,6 +667,57 @@
             "error",
           );
         }
+      }
+
+      // Cargar última cédula guardada al abrir la página
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedDni = (localStorage.getItem(STORAGE_DNI_KEY) || "").replace(
+          /\D/g,
+          "",
+        );
+        if (savedDni) {
+          dniInput.value = savedDni;
+          syncSavedDniUI(savedDni);
+          if (APPS_SCRIPT_URL) {
+            consultarDni(savedDni);
+          }
+        }
+      });
+
+      clearDniBtn.addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_DNI_KEY);
+        dniInput.value = "";
+        syncSavedDniUI("");
+        resultSection.classList.add("hidden");
+        hideStatus();
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const cleanDni = dniInput.value.replace(/\D/g, "");
+        await consultarDni(cleanDni);
+      });
+
+      // Modal bancario
+      function openBankModal() {
+        bankModal.classList.remove("hidden");
+      }
+
+      function closeBankModal() {
+        bankModal.classList.add("hidden");
+      }
+
+      openBankResultBtn.addEventListener("click", openBankModal);
+      closeBankModalBtn.addEventListener("click", closeBankModal);
+
+      bankModal.addEventListener("click", (e) => {
+        if (e.target === bankModal) closeBankModal();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !bankModal.classList.contains("hidden")) {
+          closeBankModal();
+        }
       });
 
       document.querySelectorAll(".filter-btn").forEach((btn) => {
@@ -437,10 +732,10 @@
         document.querySelectorAll(".filter-btn").forEach((btn) => {
           if (btn.dataset.filter === currentFilter) {
             btn.className =
-              "filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl bg-white text-slate-900 shadow-sm transition cursor-pointer";
+              "filter-btn px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-lg bg-white text-slate-900 shadow-xs transition cursor-pointer whitespace-nowrap";
           } else {
             btn.className =
-              "filter-btn px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition cursor-pointer";
+              "filter-btn px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition cursor-pointer whitespace-nowrap";
           }
         });
       }
@@ -517,16 +812,16 @@
           const tr = document.createElement("tr");
           tr.className = "hover:bg-slate-50/80 transition";
           tr.innerHTML = `
-          <td class="py-3.5 px-4 whitespace-nowrap text-slate-600">${item.fecha}</td>
-          <td class="py-3.5 px-4 font-semibold text-slate-900">${item.producto}</td>
-          <td class="py-3.5 px-4 text-center text-slate-600">${item.cantidad}</td>
-          <td class="py-3.5 px-4">
+          <td class="py-3 px-3 sm:py-3.5 sm:px-4 whitespace-nowrap text-slate-600">${item.fecha}</td>
+          <td class="py-3 px-3 sm:py-3.5 sm:px-4 font-semibold text-slate-900">${item.producto}</td>
+          <td class="py-3 px-3 sm:py-3.5 sm:px-4 text-center text-slate-600">${item.cantidad}</td>
+          <td class="py-3 px-3 sm:py-3.5 sm:px-4">
             <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${badgeClass}">
               ${item.estatus}
             </span>
           </td>
-          <td class="py-3.5 px-4 text-right font-bold text-slate-900">${formatBs(bsItem)}</td>
-          <td class="py-3.5 px-4 text-right text-slate-700 font-medium">${formatUSD(usdItem)}</td>
+          <td class="py-3 px-3 sm:py-3.5 sm:px-4 text-right font-bold text-slate-900 whitespace-nowrap">${formatBs(bsItem)}</td>
+          <td class="py-3 px-3 sm:py-3.5 sm:px-4 text-right text-slate-700 font-medium whitespace-nowrap">${formatUSD(usdItem)}</td>
         `;
           tbody.appendChild(tr);
         });
