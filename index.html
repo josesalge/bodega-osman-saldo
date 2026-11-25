@@ -121,7 +121,7 @@
             id="badge-tasa"
             class="text-xs font-semibold bg-white/10 backdrop-blur border border-white/15 px-3.5 py-2 rounded-full text-slate-100"
           >
-            Tasa ref: Bs. 917,78 / USD
+            Tasa ref: Bs. -- / USD
           </span>
 
           <a
@@ -328,7 +328,7 @@
               $0.00
             </p>
             <p id="tasa-label" class="text-xs text-slate-400 mt-2">
-              Calculado a tasa Bs. 917,78
+              Calculado con tasa oficial del sheet
             </p>
           </div>
         </div>
@@ -707,7 +707,7 @@
     <script>
       // PEGA AQUÍ LA URL DE TU GOOGLE APPS SCRIPT:
       const APPS_SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbzQAW15zoig3agknxY9qApsHe5fPOTt4ftaJaBBuxAYED8l4Y6CWTYaaG02RGS_ac85-g/exec";
+        "https://script.google.com/macros/s/AKfycbwDbvlNXriqNuHr5yQ1pyabaKHSnIDpoKhbv8m-t2nhW6IdFy8Zd4uthSQzkkcCfxjJ7w/exec";
       const STORAGE_DNI_KEY = "bodega_osman_ultimo_dni";
 
       let currentData = null;
@@ -981,10 +981,15 @@
       function renderClientView() {
         if (!currentData) return;
 
-        const tasa =
-          Number(currentData.tasaBcv) > 0
-            ? Number(currentData.tasaBcv)
-            : 917.7751;
+        const tasa = Number(currentData.tasaBcv);
+        if (!Number.isFinite(tasa) || tasa <= 0) {
+          showStatus(
+            "No se pudo obtener una tasa BCV válida desde la hoja 'ventas' (celda M1).",
+            "error",
+          );
+          return;
+        }
+
         const tasaFormateada = new Intl.NumberFormat("es-VE", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 4,
